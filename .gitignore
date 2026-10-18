@@ -1,0 +1,21 @@
+node_modules/
+dist/
+coverage/
+.env*
+!.env.example
+*.log
+
+# Local development configuration
+AGENTS.md
+AGENTS.override.md
+CLAUDE.md
+GEMINI.md
+.agents/
+.codex/
+.claude/
+.cursor/
+.cursorrules
+.github/copilot-instructions.md
+.github/instructions/
+.github/agents/
+.github/prompts/

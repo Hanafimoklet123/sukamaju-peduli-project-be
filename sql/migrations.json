@@ -1,0 +1,75 @@
+{
+  "files": [
+    "users.sql",
+    "sessions.sql",
+    "recovery_tokens.sql",
+    "categories.sql",
+    "reports.sql",
+    "assignments.sql",
+    "responses.sql",
+    "status_history.sql",
+    "attachments.sql",
+    "audit_events.sql",
+    "idempotency_requests.sql"
+  ],
+  "legacy": [
+    {
+      "name": "001_initial.sql",
+      "checksum": "fc8cb012ea5502a1eb6114c994c302022235556294ba140b234153084ea49efe"
+    },
+    {
+      "name": "002_reference_categories.sql",
+      "checksum": "058830f495a59a178803bac13e0656fe0fd02a585e887a86e84da3a8b0fc2078"
+    },
+    {
+      "name": "003_query_indexes.sql",
+      "checksum": "e423d6add75c487cb8daa71d55f275d6394ad130e5188dde36f04a699bd128bb"
+    }
+  ],
+  "baseline": [
+    {
+      "name": "users.sql",
+      "checksum": "45d145e10d19a5444d492bd335376b6202c5277ecde2359a41a343989b2b952d"
+    },
+    {
+      "name": "sessions.sql",
+      "checksum": "88a8136ed20e018ae7b3bea75ecb9af15e266f47684cd0031c0b17d917687f77"
+    },
+    {
+      "name": "recovery_tokens.sql",
+      "checksum": "bad0e23efaf969f6d70bbf68b9c2bdfb8dedeab08e620af0c981fc5501ce3f86"
+    },
+    {
+      "name": "categories.sql",
+      "checksum": "0205e0e7520543734342064cd73983d9ba992b99ec151c565ca24e4684447adf"
+    },
+    {
+      "name": "reports.sql",
+      "checksum": "3b95610a6f62aa986424c58491ecb05fb0df72d107e419f25c25a08c71478104"
+    },
+    {
+      "name": "assignments.sql",
+      "checksum": "52f678b60c511e7a85d0718a87e647b50d1c797b131d86429c0070b9726900ec"
+    },
+    {
+      "name": "responses.sql",
+      "checksum": "d1c7cf1b8ddeabbd6ee7a1915935fb550a0ad9649969865388ceaf36b1c232ae"
+    },
+    {
+      "name": "status_history.sql",
+      "checksum": "132b0b7c240038e8b4705947e28b0b4f0c9e32df79719408212a210d8be8b3ba"
+    },
+    {
+      "name": "attachments.sql",
+      "checksum": "663374c1ac33146fac5ce7dc49d04b09d82e2f6930b2ad7771d031a6873e2f0b"
+    },
+    {
+      "name": "audit_events.sql",
+      "checksum": "1f7bb08f9815295bafce1317d05242d196da2e1b440df02b392092bf859316c8"
+    },
+    {
+      "name": "idempotency_requests.sql",
+      "checksum": "a81b2443ff4f3cdcef5c46635c1a93a8ed354c683c8ca536bb67d399886f0de0"
+    }
+  ]
+}

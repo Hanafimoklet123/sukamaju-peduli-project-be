@@ -1,0 +1,550 @@
+{
+  "schema": 1,
+  "users": [
+    {
+      "id": "w1",
+      "name": "Ahmad Pratama",
+      "email": "ahmad.contoh@example.com",
+      "phone": "081234567890",
+      "role": "warga",
+      "state": "active"
+    },
+    {
+      "id": "w2",
+      "name": "Siti Aminah",
+      "email": "siti.contoh@example.com",
+      "phone": "081234567891",
+      "role": "warga",
+      "state": "active"
+    },
+    {
+      "id": "w3",
+      "name": "Dian Putri",
+      "email": "dian.contoh@example.com",
+      "phone": "081234567892",
+      "role": "warga",
+      "state": "active"
+    },
+    {
+      "id": "p1",
+      "name": "Rina Wulandari",
+      "email": "rina.contoh@example.com",
+      "phone": "081234567893",
+      "role": "pegawai",
+      "state": "active"
+    },
+    {
+      "id": "p2",
+      "name": "Budi Santoso",
+      "email": "budi.contoh@example.com",
+      "phone": "081234567894",
+      "role": "pegawai",
+      "state": "active"
+    },
+    {
+      "id": "p3",
+      "name": "Dewi Lestari",
+      "email": "dewi.contoh@example.com",
+      "phone": "",
+      "role": "pegawai",
+      "state": "pending"
+    },
+    {
+      "id": "a1",
+      "name": "Admin Kelurahan",
+      "email": "admin.contoh@example.com",
+      "phone": "081234567895",
+      "role": "admin",
+      "state": "active"
+    }
+  ],
+  "categories": [
+    {
+      "id": "c1",
+      "name": "Infrastruktur lingkungan",
+      "description": "Lampu jalan, saluran air, dan sarana umum lingkungan.",
+      "active": true
+    },
+    {
+      "id": "c2",
+      "name": "Kebersihan",
+      "description": "Sampah dan kebersihan area sekitar.",
+      "active": true
+    },
+    {
+      "id": "c3",
+      "name": "Ketertiban lingkungan",
+      "description": "Gangguan ketertiban lingkungan.",
+      "active": true
+    },
+    {
+      "id": "c4",
+      "name": "Pelayanan administrasi",
+      "description": "Keluhan tentang proses pelayanan kelurahan.",
+      "active": true
+    }
+  ],
+  "reports": [
+    {
+      "id": "124",
+      "number": "SM-2026-00124",
+      "userId": "w1",
+      "title": "Lampu jalan tidak menyala",
+      "description": "Lampu jalan di depan gang dekat balai warga tidak menyala sejak tiga malam lalu. Kondisi jalan menjadi gelap saat warga pulang pada malam hari. Mohon dilakukan pemeriksaan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c1",
+      "status": "Diproses",
+      "createdAt": "2026-10-06T16:20:00+07:00",
+      "version": 1,
+      "employeeId": "p1",
+      "lastEmployeeId": "p1",
+      "assignments": [
+        {
+          "employeeId": "p1",
+          "employeeName": "Rina Wulandari",
+          "assignedBy": "Admin Kelurahan",
+          "at": "2026-10-06T17:20:00+07:00",
+          "reason": "Sesuai kewenangan"
+        }
+      ],
+      "responses": [
+        {
+          "id": "r124",
+          "authorId": "p1",
+          "author": "Rina Wulandari",
+          "text": "Petugas meninjau lokasi dan menjadwalkan pemeriksaan.",
+          "internal": false,
+          "kind": "perkembangan",
+          "at": "2026-10-06T17:20:00+07:00"
+        }
+      ],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-10-06T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        },
+        {
+          "status": "Diproses",
+          "at": "2026-10-06T17:20:00+07:00",
+          "text": "Petugas meninjau lokasi dan menjadwalkan pemeriksaan."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg"
+    },
+    {
+      "id": "126",
+      "number": "SM-2026-00126",
+      "userId": "w1",
+      "title": "Saluran air tersumbat",
+      "description": "Saluran air tersumbat di lingkungan sekitar tempat tinggal warga. Kondisi ini mengganggu kegiatan sehari-hari. Mohon dilakukan pemeriksaan dan tindak lanjut sesuai kewenangan kelurahan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c1",
+      "status": "Diterima",
+      "createdAt": "2026-10-07T16:20:00+07:00",
+      "version": 1,
+      "assignments": [],
+      "responses": [],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-10-07T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg"
+    },
+    {
+      "id": "103",
+      "number": "SM-2026-00103",
+      "userId": "w1",
+      "title": "Sampah menumpuk di area umum",
+      "description": "Sampah menumpuk di area umum di lingkungan sekitar tempat tinggal warga. Kondisi ini mengganggu kegiatan sehari-hari. Mohon dilakukan pemeriksaan dan tindak lanjut sesuai kewenangan kelurahan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c2",
+      "status": "Selesai",
+      "createdAt": "2026-10-01T16:20:00+07:00",
+      "version": 1,
+      "lastEmployeeId": "p1",
+      "assignments": [
+        {
+          "employeeId": "p1",
+          "employeeName": "Rina Wulandari",
+          "assignedBy": "Admin Kelurahan",
+          "at": "2026-10-01T17:20:00+07:00",
+          "reason": "Sesuai kewenangan",
+          "endedAt": "2026-10-01T17:20:00+07:00"
+        }
+      ],
+      "responses": [],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-10-01T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        },
+        {
+          "status": "Selesai",
+          "at": "2026-10-01T17:20:00+07:00",
+          "text": "Penanganan telah selesai dan hasil tersedia."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg",
+      "result": "Pemeriksaan telah dilakukan. Area dibersihkan dan kondisi kembali dapat digunakan oleh warga.",
+      "resolvedAt": "2026-10-01T17:20:00+07:00"
+    },
+    {
+      "id": "121",
+      "number": "SM-2026-00121",
+      "userId": "w2",
+      "title": "Jalan lingkungan berlubang",
+      "description": "Jalan lingkungan berlubang di lingkungan sekitar tempat tinggal warga. Kondisi ini mengganggu kegiatan sehari-hari. Mohon dilakukan pemeriksaan dan tindak lanjut sesuai kewenangan kelurahan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c1",
+      "status": "Diproses",
+      "createdAt": "2026-10-05T16:20:00+07:00",
+      "version": 1,
+      "employeeId": "p2",
+      "lastEmployeeId": "p2",
+      "assignments": [
+        {
+          "employeeId": "p2",
+          "employeeName": "Budi Santoso",
+          "assignedBy": "Admin Kelurahan",
+          "at": "2026-10-05T17:20:00+07:00",
+          "reason": "Sesuai kewenangan"
+        }
+      ],
+      "responses": [
+        {
+          "id": "r121",
+          "authorId": "p2",
+          "author": "Budi Santoso",
+          "text": "Petugas meninjau lokasi dan menjadwalkan pemeriksaan.",
+          "internal": false,
+          "kind": "perkembangan",
+          "at": "2026-10-05T17:20:00+07:00"
+        }
+      ],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-10-05T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        },
+        {
+          "status": "Diproses",
+          "at": "2026-10-05T17:20:00+07:00",
+          "text": "Petugas meninjau lokasi dan menjadwalkan pemeriksaan."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg"
+    },
+    {
+      "id": "128",
+      "number": "SM-2026-00128",
+      "userId": "w2",
+      "title": "Gangguan ketertiban malam hari",
+      "description": "Gangguan ketertiban malam hari di lingkungan sekitar tempat tinggal warga. Kondisi ini mengganggu kegiatan sehari-hari. Mohon dilakukan pemeriksaan dan tindak lanjut sesuai kewenangan kelurahan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c3",
+      "status": "Diterima",
+      "createdAt": "2026-10-08T16:20:00+07:00",
+      "version": 1,
+      "assignments": [],
+      "responses": [],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-10-08T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg"
+    },
+    {
+      "id": "129",
+      "number": "SM-2026-00129",
+      "userId": "w3",
+      "title": "Informasi pelayanan belum jelas",
+      "description": "Informasi pelayanan belum jelas di lingkungan sekitar tempat tinggal warga. Kondisi ini mengganggu kegiatan sehari-hari. Mohon dilakukan pemeriksaan dan tindak lanjut sesuai kewenangan kelurahan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c4",
+      "status": "Diterima",
+      "createdAt": "2026-10-09T16:20:00+07:00",
+      "version": 1,
+      "assignments": [],
+      "responses": [],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-10-09T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg"
+    },
+    {
+      "id": "98",
+      "number": "SM-2026-00098",
+      "userId": "w2",
+      "title": "Perbaikan jalan di luar wilayah",
+      "description": "Perbaikan jalan di luar wilayah di lingkungan sekitar tempat tinggal warga. Kondisi ini mengganggu kegiatan sehari-hari. Mohon dilakukan pemeriksaan dan tindak lanjut sesuai kewenangan kelurahan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c1",
+      "status": "Ditolak",
+      "createdAt": "2026-09-29T16:20:00+07:00",
+      "version": 1,
+      "assignments": [],
+      "responses": [],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-09-29T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        },
+        {
+          "status": "Ditolak",
+          "at": "2026-09-29T17:20:00+07:00",
+          "text": "Lokasi berada di luar wilayah layanan kelurahan."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg",
+      "rejection": "Lokasi berada di luar wilayah layanan kelurahan. Mohon gunakan kanal resmi wilayah terkait.",
+      "rejectionCode": "outside_area"
+    },
+    {
+      "id": "92",
+      "number": "SM-2026-00092",
+      "userId": "w2",
+      "title": "Sampah pada saluran lingkungan",
+      "description": "Sampah pada saluran lingkungan di lingkungan sekitar tempat tinggal warga. Kondisi ini mengganggu kegiatan sehari-hari. Mohon dilakukan pemeriksaan dan tindak lanjut sesuai kewenangan kelurahan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c2",
+      "status": "Selesai",
+      "createdAt": "2026-09-20T16:20:00+07:00",
+      "version": 1,
+      "lastEmployeeId": "p2",
+      "assignments": [
+        {
+          "employeeId": "p2",
+          "employeeName": "Budi Santoso",
+          "assignedBy": "Admin Kelurahan",
+          "at": "2026-09-20T17:20:00+07:00",
+          "reason": "Sesuai kewenangan",
+          "endedAt": "2026-09-20T17:20:00+07:00"
+        }
+      ],
+      "responses": [],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-09-20T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        },
+        {
+          "status": "Selesai",
+          "at": "2026-09-20T17:20:00+07:00",
+          "text": "Penanganan telah selesai dan hasil tersedia."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg",
+      "result": "Pemeriksaan telah dilakukan. Area dibersihkan dan kondisi kembali dapat digunakan oleh warga.",
+      "resolvedAt": "2026-09-20T17:20:00+07:00"
+    },
+    {
+      "id": "91",
+      "number": "SM-2026-00091",
+      "userId": "w3",
+      "title": "Penerangan jalan redup",
+      "description": "Penerangan jalan redup di lingkungan sekitar tempat tinggal warga. Kondisi ini mengganggu kegiatan sehari-hari. Mohon dilakukan pemeriksaan dan tindak lanjut sesuai kewenangan kelurahan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c1",
+      "status": "Selesai",
+      "createdAt": "2026-09-18T16:20:00+07:00",
+      "version": 1,
+      "lastEmployeeId": "p1",
+      "assignments": [
+        {
+          "employeeId": "p1",
+          "employeeName": "Rina Wulandari",
+          "assignedBy": "Admin Kelurahan",
+          "at": "2026-09-18T17:20:00+07:00",
+          "reason": "Sesuai kewenangan",
+          "endedAt": "2026-09-18T17:20:00+07:00"
+        }
+      ],
+      "responses": [],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-09-18T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        },
+        {
+          "status": "Selesai",
+          "at": "2026-09-18T17:20:00+07:00",
+          "text": "Penanganan telah selesai dan hasil tersedia."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg",
+      "result": "Pemeriksaan telah dilakukan. Area dibersihkan dan kondisi kembali dapat digunakan oleh warga.",
+      "resolvedAt": "2026-09-18T17:20:00+07:00"
+    },
+    {
+      "id": "83",
+      "number": "SM-2026-00083",
+      "userId": "w2",
+      "title": "Ketertiban parkir lingkungan",
+      "description": "Ketertiban parkir lingkungan di lingkungan sekitar tempat tinggal warga. Kondisi ini mengganggu kegiatan sehari-hari. Mohon dilakukan pemeriksaan dan tindak lanjut sesuai kewenangan kelurahan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c3",
+      "status": "Selesai",
+      "createdAt": "2026-08-17T16:20:00+07:00",
+      "version": 1,
+      "lastEmployeeId": "p1",
+      "assignments": [
+        {
+          "employeeId": "p1",
+          "employeeName": "Rina Wulandari",
+          "assignedBy": "Admin Kelurahan",
+          "at": "2026-08-17T17:20:00+07:00",
+          "reason": "Sesuai kewenangan",
+          "endedAt": "2026-08-17T17:20:00+07:00"
+        }
+      ],
+      "responses": [],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-08-17T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        },
+        {
+          "status": "Selesai",
+          "at": "2026-08-17T17:20:00+07:00",
+          "text": "Penanganan telah selesai dan hasil tersedia."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg",
+      "result": "Pemeriksaan telah dilakukan. Area dibersihkan dan kondisi kembali dapat digunakan oleh warga.",
+      "resolvedAt": "2026-08-17T17:20:00+07:00"
+    },
+    {
+      "id": "70",
+      "number": "SM-2026-00070",
+      "userId": "w3",
+      "title": "Penjelasan antrean layanan",
+      "description": "Penjelasan antrean layanan di lingkungan sekitar tempat tinggal warga. Kondisi ini mengganggu kegiatan sehari-hari. Mohon dilakukan pemeriksaan dan tindak lanjut sesuai kewenangan kelurahan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c4",
+      "status": "Selesai",
+      "createdAt": "2026-07-12T16:20:00+07:00",
+      "version": 1,
+      "lastEmployeeId": "p2",
+      "assignments": [
+        {
+          "employeeId": "p2",
+          "employeeName": "Budi Santoso",
+          "assignedBy": "Admin Kelurahan",
+          "at": "2026-07-12T17:20:00+07:00",
+          "reason": "Sesuai kewenangan",
+          "endedAt": "2026-07-12T17:20:00+07:00"
+        }
+      ],
+      "responses": [],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-07-12T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        },
+        {
+          "status": "Selesai",
+          "at": "2026-07-12T17:20:00+07:00",
+          "text": "Penanganan telah selesai dan hasil tersedia."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg",
+      "result": "Pemeriksaan telah dilakukan. Area dibersihkan dan kondisi kembali dapat digunakan oleh warga.",
+      "resolvedAt": "2026-07-12T17:20:00+07:00"
+    },
+    {
+      "id": "52",
+      "number": "SM-2026-00052",
+      "userId": "w2",
+      "title": "Drainase lingkungan tersumbat",
+      "description": "Drainase lingkungan tersumbat di lingkungan sekitar tempat tinggal warga. Kondisi ini mengganggu kegiatan sehari-hari. Mohon dilakukan pemeriksaan dan tindak lanjut sesuai kewenangan kelurahan.",
+      "location": "Jalan Melati, RT 03/RW 01, depan gang dekat balai warga.",
+      "categoryId": "c1",
+      "status": "Selesai",
+      "createdAt": "2026-06-21T16:20:00+07:00",
+      "version": 1,
+      "lastEmployeeId": "p1",
+      "assignments": [
+        {
+          "employeeId": "p1",
+          "employeeName": "Rina Wulandari",
+          "assignedBy": "Admin Kelurahan",
+          "at": "2026-06-21T17:20:00+07:00",
+          "reason": "Sesuai kewenangan",
+          "endedAt": "2026-06-21T17:20:00+07:00"
+        }
+      ],
+      "responses": [],
+      "history": [
+        {
+          "status": "Diterima",
+          "at": "2026-06-21T16:20:00+07:00",
+          "text": "Laporan tersimpan dan masuk antrean pemeriksaan admin."
+        },
+        {
+          "status": "Selesai",
+          "at": "2026-06-21T17:20:00+07:00",
+          "text": "Penanganan telah selesai dan hasil tersedia."
+        }
+      ],
+      "photo": "illustration",
+      "photoName": "foto-lampu.jpg",
+      "result": "Pemeriksaan telah dilakukan. Area dibersihkan dan kondisi kembali dapat digunakan oleh warga.",
+      "resolvedAt": "2026-06-21T17:20:00+07:00"
+    }
+  ],
+  "audits": [
+    {
+      "id": "au1",
+      "at": "2026-10-07T09:30:00+07:00",
+      "actor": "Admin Kelurahan",
+      "action": "Penugasan",
+      "object": "SM-2026-00124",
+      "reason": "Sesuai kewenangan penanganan"
+    },
+    {
+      "id": "au2",
+      "at": "2026-10-07T08:45:00+07:00",
+      "actor": "Admin Kelurahan",
+      "action": "Kategori",
+      "object": "Infrastruktur lingkungan",
+      "reason": "Perjelas deskripsi kategori"
+    },
+    {
+      "id": "au3",
+      "at": "2026-10-06T15:00:00+07:00",
+      "actor": "Admin Kelurahan",
+      "action": "Akun pegawai",
+      "object": "Dewi Lestari",
+      "reason": "Penambahan petugas"
+    }
+  ]
+}

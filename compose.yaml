@@ -1,0 +1,53 @@
+services:
+  backend:
+    build: .
+    init: true
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      HOST: 0.0.0.0
+      PORT: 4000
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: sukamaju
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      PGDATABASE: sukamaju_peduli
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://127.0.0.1:3000}
+      SESSION_HOURS: ${SESSION_HOURS:-12}
+      ALLOW_DEMO_SEED: "false"
+      SEED_PASSWORD: ${SEED_PASSWORD:-}
+    ports:
+      - "127.0.0.1:${DOCKER_BACKEND_PORT:-4002}:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sukamaju_peduli
+      POSTGRES_USER: sukamaju
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - sukamaju_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sukamaju -d sukamaju_peduli"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+volumes:
+  sukamaju_pg:
