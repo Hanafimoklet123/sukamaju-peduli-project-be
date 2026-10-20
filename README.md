@@ -22,6 +22,8 @@ Backend: `http://127.0.0.1:4000/api`. Periksa `/api/health`. Untuk perubahan kod
 
 ## Backend dan database dalam Docker
 
+Untuk domain `https://be.capstone-klmpk-b.my.id`, gunakan [panduan Nginx dan HTTPS VPS](deploy/README.md). Konfigurasi tersedia di `deploy/nginx/backend.conf`.
+
 Isi `POSTGRES_PASSWORD` pada `.env` dengan password PostgreSQL (untuk volume yang sudah ada, gunakan password awalnya). Atur `NODE_ENV=development`, `DOCKER_BACKEND_PORT=4002` untuk port backend Docker, dan `FRONTEND_ORIGIN=http://127.0.0.1:3000`.
 
 ```sh

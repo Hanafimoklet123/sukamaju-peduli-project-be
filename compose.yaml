@@ -1,6 +1,8 @@
 services:
   backend:
     build: .
+    networks:
+      - default
     init: true
     restart: unless-stopped
     environment:
@@ -35,6 +37,8 @@ services:
       start_period: 30s
   postgres:
     image: postgres:16
+    networks:
+      - default
     restart: unless-stopped
     environment:
       POSTGRES_DB: sukamaju_peduli
@@ -51,3 +55,7 @@ services:
       retries: 10
 volumes:
   sukamaju_pg:
+networks:
+  default:
+    name: sukamaju-peduli-project
+    driver: bridge
