@@ -60,6 +60,7 @@ export interface Actor {
   phone: string;
   role: Role;
   state: "active" | "pending" | "inactive";
+  deletedAt?: string;
 }
 export const safeUser = (u: any): Actor => ({
   id: u.id,
@@ -68,6 +69,7 @@ export const safeUser = (u: any): Actor => ({
   phone: u.phone,
   role: u.role,
   state: u.state,
+  ...(u.deleted_at ? { deletedAt: new Date(u.deleted_at).toISOString() } : {}),
 });
 export async function audit(
   c: Sql,

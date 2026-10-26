@@ -94,7 +94,10 @@ before(
         "utf8",
       ),
     );
-    await pool.query("DELETE FROM schema_migrations");
+    await pool.query(
+      "DELETE FROM schema_migrations WHERE name=ANY($1::text[])",
+      [manifest.baseline.map((migration) => migration.name)],
+    );
     for (const migration of manifest.legacy) {
       await pool.query(
         "INSERT INTO schema_migrations(name,checksum) VALUES($1,$2)",
@@ -693,4 +696,294 @@ test("timezone bulan dan kuartal memakai Asia/Jakarta pada batas UTC", async () 
   const all = await call("/reports?pageSize=2", "GET", undefined, admin);
   assert.equal(all.data.items.length, 2);
   assert.ok(all.data.total > 2);
+});
+
+test("admin menghapus kategori dan akun tanpa menghilangkan riwayat serta pagination tetap konsisten", async () => {
+  const category = categories[0];
+  assert.equal(
+    (await call(`/categories/${category.id}`, "DELETE", undefined, warga))
+      .status,
+    403,
+  );
+  assert.equal(
+    (await call(`/categories/${category.id}`, "DELETE", undefined, admin))
+      .status,
+    200,
+  );
+  assert.equal(
+    (await call(`/categories/${category.id}`, "DELETE", undefined, admin))
+      .status,
+    404,
+  );
+  assert.equal(
+    (
+      await call(
+        `/categories/${category.id}`,
+        "PATCH",
+        {
+          name: category.name,
+          description: category.description,
+          active: true,
+        },
+        admin,
+      )
+    ).status,
+    404,
+  );
+  const publicCategories = await call("/categories", "GET", undefined, warga);
+  assert.ok(!publicCategories.data.some((c) => c.id === category.id));
+  const archived = (
+    await call("/workspace", "GET", undefined, admin)
+  ).data.categories.find((c) => c.id === category.id);
+  assert.ok(archived.deletedAt);
+  assert.equal(archived.active, false);
+  assert.equal(
+    (
+      await call(
+        "/reports",
+        "POST",
+        makeDraft({ categoryId: category.id }),
+        warga,
+      )
+    ).status,
+    409,
+  );
+  const catPage = await call(
+    "/admin/categories?page=1&pageSize=2",
+    "GET",
+    undefined,
+    admin,
+  );
+  assert.equal(catPage.status, 200);
+  assert.equal(catPage.data.items.length, 2);
+  assert.ok(catPage.data.total >= 3);
+  assert.equal(
+    (await call("/admin/categories", "GET", undefined, warga)).status,
+    403,
+  );
+  assert.equal(
+    (await call("/admin/categories?page=0", "GET", undefined, admin)).status,
+    422,
+  );
+
+  const prefix = `warga-delete-${randomUUID()}`;
+  const created = [];
+  for (let i = 0; i < 3; i++) {
+    const account = await call("/auth/register", "POST", {
+      name: `${prefix} ${i}`,
+      email: `${prefix}-${i}@example.com`,
+      password,
+      privacyAccepted: true,
+    });
+    assert.equal(account.status, 201);
+    created.push(account.data.user);
+  }
+  const first = (
+    await call(
+      `/citizens?q=${prefix}&pageSize=2&page=1`,
+      "GET",
+      undefined,
+      admin,
+    )
+  ).data;
+  const second = (
+    await call(
+      `/citizens?q=${prefix}&pageSize=2&page=2`,
+      "GET",
+      undefined,
+      admin,
+    )
+  ).data;
+  assert.equal(first.total, 3);
+  assert.equal(first.items.length, 2);
+  assert.equal(second.items.length, 1);
+  assert.notEqual(first.items[0].id, second.items[0].id);
+  const citizen = created[0],
+    citizenSession = await login(citizen.email);
+  const report = await call(
+    "/reports",
+    "POST",
+    makeDraft({ categoryId: categories[1].id }),
+    citizenSession,
+  );
+  assert.equal(report.status, 201);
+  const recovery = await call(
+    `/users/${citizen.id}/recovery`,
+    "POST",
+    {
+      reason: "Identitas pemilik akun telah diverifikasi untuk pengujian.",
+      identityVerified: true,
+    },
+    admin,
+  );
+  const token = new URLSearchParams(
+    new URL(recovery.data.url).hash.slice(1),
+  ).get("token");
+  assert.equal(
+    (await call(`/citizens/${citizen.id}`, "DELETE", undefined, pegawai))
+      .status,
+    403,
+  );
+  assert.equal(
+    (await call(`/citizens/${citizen.id}`, "DELETE", undefined, admin)).status,
+    200,
+  );
+  assert.equal(
+    (await call("/me", "GET", undefined, citizenSession)).status,
+    401,
+  );
+  assert.equal(
+    (await call("/auth/login", "POST", { email: citizen.email, password }))
+      .status,
+    401,
+  );
+  assert.equal(
+    (await call("/auth/token/consume", "POST", { token, password })).status,
+    400,
+  );
+  assert.equal(
+    (await call(`/reports/${report.data.reportId}`, "GET", undefined, admin))
+      .status,
+    200,
+  );
+  assert.equal(
+    (await call(`/citizens?q=${prefix}`, "GET", undefined, admin)).data.total,
+    2,
+  );
+  assert.equal(
+    (
+      await call(
+        `/citizens/${users.find((u) => u.role === "admin").id}`,
+        "DELETE",
+        undefined,
+        admin,
+      )
+    ).status,
+    404,
+  );
+});
+
+test("hapus pegawai menolak tugas aktif dan mencabut akses setelah tugas selesai", async () => {
+  await app.close();
+  app = await require("../dist/main.js").createApp();
+  await app.listen(0, "127.0.0.1");
+  base = (await app.getUrl()) + "/api";
+  const prefix = `pegawai-delete-${randomUUID()}`;
+  const created = [];
+  for (let i = 0; i < 3; i++) {
+    const account = await call(
+      "/employees",
+      "POST",
+      { name: `${prefix} ${i}`, email: `${prefix}-${i}@example.com` },
+      admin,
+    );
+    assert.equal(account.status, 201);
+    created.push(account.data.user);
+  }
+  const first = (
+    await call(
+      `/employees?q=${prefix}&pageSize=2&page=1`,
+      "GET",
+      undefined,
+      admin,
+    )
+  ).data;
+  const second = (
+    await call(
+      `/employees?q=${prefix}&pageSize=2&page=2`,
+      "GET",
+      undefined,
+      admin,
+    )
+  ).data;
+  assert.equal(first.total, 3);
+  assert.equal(first.items.length, 2);
+  assert.equal(second.items.length, 1);
+  const employee = created[0];
+  const activation = await call(
+    `/employees/${employee.id}/activation`,
+    "POST",
+    {
+      reason: "Identitas pegawai diperiksa untuk aktivasi pengujian.",
+      identityVerified: true,
+    },
+    admin,
+  );
+  const token = new URLSearchParams(
+    new URL(activation.data.url).hash.slice(1),
+  ).get("token");
+  assert.equal(
+    (await call("/auth/token/consume", "POST", { token, password })).status,
+    201,
+  );
+  const session = await login(employee.email);
+  const report = await call(
+    "/reports",
+    "POST",
+    makeDraft({ categoryId: categories[1].id }),
+    warga,
+  );
+  const id = report.data.reportId;
+  assert.equal(
+    (
+      await call(
+        `/reports/${id}/verify`,
+        "POST",
+        {
+          version: 1,
+          text: "Penugasan pegawai untuk pemeriksaan lapangan.",
+          employeeId: employee.id,
+        },
+        admin,
+      )
+    ).status,
+    201,
+  );
+  assert.equal(
+    (await call(`/employees/${employee.id}`, "DELETE", undefined, admin))
+      .status,
+    409,
+  );
+  assert.equal((await call("/me", "GET", undefined, session)).status, 200);
+  assert.equal(
+    (
+      await call(
+        `/reports/${id}/complete`,
+        "POST",
+        {
+          version: 2,
+          text: "Pemeriksaan selesai dan kerusakan telah diperbaiki.",
+        },
+        session,
+      )
+    ).status,
+    201,
+  );
+  assert.equal(
+    (await call(`/employees/${employee.id}`, "DELETE", undefined, admin))
+      .status,
+    200,
+  );
+  assert.equal((await call("/me", "GET", undefined, session)).status, 401);
+  assert.equal(
+    (await call(`/employees?q=${prefix}`, "GET", undefined, admin)).data.total,
+    2,
+  );
+  assert.equal(
+    (
+      await call(
+        `/employees/${employee.id}`,
+        "PATCH",
+        { name: employee.name, email: employee.email, state: "active" },
+        admin,
+      )
+    ).status,
+    404,
+  );
+  const detail = (await call(`/reports/${id}`, "GET", undefined, admin)).data;
+  assert.equal(detail.status, "Selesai");
+  assert.ok(detail.assignments.some((a) => a.employeeId === employee.id));
+  const audit = (await call("/audit?pageSize=100", "GET", undefined, admin))
+    .data.items;
+  assert.ok(audit.some((a) => a.action === "Hapus pegawai"));
 });

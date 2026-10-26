@@ -2,6 +2,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  Delete,
   Get,
   Injectable,
   NotFoundException,
@@ -38,7 +39,7 @@ export class ManagementService {
   async users(actor: Actor, role: "pegawai" | "warga", q: ListDto) {
     requireRole(actor, "admin");
     const v = [role, q.q || ""];
-    const w = `role=$1 AND (name ILIKE '%'||$2||'%' OR email ILIKE '%'||$2||'%')`;
+    const w = `deleted_at IS NULL AND role=$1 AND (name ILIKE '%'||$2||'%' OR email ILIKE '%'||$2||'%')`;
     const total = Number(
       (await this.db.query("SELECT count(*) FROM users WHERE " + w, v)).rows[0]
         .count,
@@ -64,7 +65,7 @@ export class ManagementService {
       if (id) {
         target = (
           await c.query(
-            `SELECT * FROM users WHERE id=$1 AND role='pegawai' FOR UPDATE`,
+            `SELECT * FROM users WHERE id=$1 AND role='pegawai' AND deleted_at IS NULL FOR UPDATE`,
             [id],
           )
         ).rows[0];
@@ -126,12 +127,93 @@ export class ManagementService {
       return { ok: true, userId: target.id, user: safeUser(target) };
     });
   }
-  async categories() {
+  async categories(includeDeleted = false) {
     return (
       await this.db.query(
-        "SELECT id,name,description,active FROM categories ORDER BY created_at,id",
+        `SELECT id,name,description,active,deleted_at AS "deletedAt" FROM categories ${includeDeleted ? "" : "WHERE deleted_at IS NULL"} ORDER BY created_at,id`,
       )
     ).rows;
+  }
+  async categoryList(actor: Actor, q: ListDto) {
+    requireRole(actor, "admin");
+    const values = [q.q || ""];
+    const where =
+      "deleted_at IS NULL AND (name ILIKE '%'||$1||'%' OR description ILIKE '%'||$1||'%')";
+    const total = Number(
+      (
+        await this.db.query(
+          "SELECT count(*) FROM categories WHERE " + where,
+          values,
+        )
+      ).rows[0].count,
+    );
+    const items = (
+      await this.db.query(
+        `SELECT id,name,description,active FROM categories WHERE ${where} ORDER BY created_at,id LIMIT $2 OFFSET $3`,
+        [...values, q.pageSize, (q.page - 1) * q.pageSize],
+      )
+    ).rows;
+    return { items, total, page: q.page, pageSize: q.pageSize };
+  }
+  async remove(
+    req: AuthRequest,
+    kind: "categories" | "warga" | "pegawai",
+    id: string,
+  ) {
+    return this.db.transaction(async (c) => {
+      const actor = await lockSession(c, req);
+      requireRole(actor, "admin");
+      if (kind === "categories") {
+        const target = (
+          await c.query(
+            "SELECT id FROM categories WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",
+            [id],
+          )
+        ).rows[0];
+        if (!target) throw new NotFoundException("Kategori tidak ditemukan.");
+        await c.query(
+          "UPDATE categories SET active=false,deleted_at=now(),updated_at=now() WHERE id=$1",
+          [id],
+        );
+      } else {
+        const target = (
+          await c.query(
+            "SELECT id FROM users WHERE id=$1 AND role=$2 AND deleted_at IS NULL FOR UPDATE",
+            [id, kind],
+          )
+        ).rows[0];
+        if (!target) throw new NotFoundException("Akun tidak ditemukan.");
+        if (
+          kind === "pegawai" &&
+          (
+            await c.query(
+              "SELECT id FROM assignments WHERE employee_id=$1 AND ended_at IS NULL LIMIT 1",
+              [id],
+            )
+          ).rowCount
+        )
+          throw new ConflictException(
+            "Alihkan seluruh tugas aktif sebelum menghapus pegawai.",
+          );
+        await c.query(
+          "UPDATE users SET state='inactive',deleted_at=now(),updated_at=now() WHERE id=$1",
+          [id],
+        );
+        await c.query("DELETE FROM sessions WHERE user_id=$1", [id]);
+        await c.query(
+          "UPDATE recovery_tokens SET used_at=now() WHERE user_id=$1 AND used_at IS NULL",
+          [id],
+        );
+      }
+      await audit(
+        c,
+        actor.id,
+        "Hapus " + (kind === "categories" ? "kategori" : kind),
+        id,
+        "Dihapus dari pengelolaan; riwayat laporan dipertahankan",
+      );
+      return { ok: true };
+    });
   }
   async category(req: AuthRequest, dto: CategoryDto, id?: string) {
     return this.db.transaction(async (c) => {
@@ -149,7 +231,10 @@ export class ManagementService {
       let row: any;
       if (id) {
         const target = (
-          await c.query("SELECT * FROM categories WHERE id=$1 FOR UPDATE", [id])
+          await c.query(
+            "SELECT * FROM categories WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",
+            [id],
+          )
         ).rows[0];
         if (!target) throw new NotFoundException("Kategori tidak ditemukan.");
         if (
@@ -270,7 +355,7 @@ export class ManagementService {
       actor.role === "admin"
         ? (
             await this.db.query(
-              "SELECT id,name,email,phone,role,state FROM users ORDER BY created_at,id",
+              "SELECT id,name,email,phone,role,state,deleted_at FROM users ORDER BY created_at,id",
             )
           ).rows
         : [
@@ -287,7 +372,7 @@ export class ManagementService {
       currentUser: actor,
       users: users.map(safeUser),
       reports: await this.reports.hydrate(this.db.pool, rows, actor),
-      categories: await this.categories(),
+      categories: await this.categories(true),
       audits:
         actor.role === "admin"
           ? (
@@ -357,6 +442,30 @@ export class ManagementController {
   }
   @Get("categories") categories() {
     return this.service.categories();
+  }
+  @Get("admin/categories") categoryList(
+    @Req() req: AuthRequest,
+    @Query() q: ListDto,
+  ) {
+    return this.service.categoryList(req.user, q);
+  }
+  @Delete("categories/:id") categoryDelete(
+    @Req() req: AuthRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+  ) {
+    return this.service.remove(req, "categories", id);
+  }
+  @Delete("employees/:id") employeeDelete(
+    @Req() req: AuthRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+  ) {
+    return this.service.remove(req, "pegawai", id);
+  }
+  @Delete("citizens/:id") citizenDelete(
+    @Req() req: AuthRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+  ) {
+    return this.service.remove(req, "warga", id);
   }
   @Post("categories") categoryNew(
     @Req() req: AuthRequest,

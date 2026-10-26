@@ -10,7 +10,8 @@
     "status_history.sql",
     "attachments.sql",
     "audit_events.sql",
-    "idempotency_requests.sql"
+    "idempotency_requests.sql",
+    "004_management_deletion.sql"
   ],
   "legacy": [
     {

@@ -1,5 +1,7 @@
 # SQL PostgreSQL per tabel
 
+Migrasi lanjutan `004_management_deletion.sql` dijalankan setelah seluruh file tabel. Migrasi ini menambahkan `deleted_at` pada users/categories dan memastikan data yang dihapus tetap nonaktif. Runner membacanya dari akhir daftar `files` pada migrations.json; migrasi baseline lama tetap dipertahankan.
+
 Setiap tabel memiliki file sendiri. Indeks, constraint, sequence, dan trigger yang terkait diletakkan dalam file tabel tersebut. Data kategori awal ada di categories.sql. Data contoh tetap di demo-data.json.
 
 ## Menjalankan

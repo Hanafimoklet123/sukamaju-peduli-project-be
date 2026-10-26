@@ -2,6 +2,14 @@
 
 Base path: `/api`. JSON memakai camelCase pada HTTP; tabel PostgreSQL memakai snake_case. UUID digunakan untuk parameter ID. Respons tidak memuat hash sandi, token sesi, maupun catatan internal bagi warga.
 
+## Penghapusan data admin dan pagination
+
+- `DELETE /categories/:id`, `DELETE /citizens/:id`, dan `DELETE /employees/:id` hanya tersedia bagi admin, tanpa body. Respons berhasil: `{ok:true}`.
+- Penghapusan menandai `deleted_at` dan menonaktifkan akun/kategori, bukan menghapus baris yang menjadi referensi laporan. Data tersebut tidak muncul dalam daftar pengelolaan; akun tidak dapat login, sesi dicabut, dan token pemulihan dibatalkan. Riwayat pengaduan dan audit tetap tersimpan. Email dan nama kategori tetap mengikuti aturan keunikan yang ada.
+- Pegawai dengan penugasan aktif ditolak dengan 409. Alihkan atau selesaikan tugas sebelum menghapus akun. ID yang salah peran, sudah dihapus, atau tidak ditemukan menghasilkan 404.
+- `GET /employees`, `GET /citizens`, dan `GET /admin/categories` menerima `q`, `page` (mulai 1), dan `pageSize` (1-100, default 20). Respons: `{items,total,page,pageSize}`; data yang dihapus tidak dihitung.
+- `GET /categories` tetap mengembalikan array untuk kompatibilitas. Proyeksi `/workspace` mempertahankan referensi historis dengan penanda `deletedAt`; layar pengelolaan menyaring penanda tersebut. Pagination layar admin saat ini membagi proyeksi workspace menjadi 5 baris per halaman di frontend.
+
 ## Autentikasi
 
 `POST /auth/login` dengan `{"email":"ahmad.contoh@example.com","password":"DemoSukamaju2026!"}` mengembalikan `{user}` dan cookie `sukamaju_session`. Cookie HttpOnly, SameSite=Lax, path `/api`, Secure ketika NODE_ENV=production. Tidak ada token dalam localStorage. Browser mengakses API melalui proxy Next.js.

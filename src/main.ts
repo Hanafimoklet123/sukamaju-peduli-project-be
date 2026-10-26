@@ -97,7 +97,7 @@ export async function createApp() {
   app.enableCors({
     origin,
     credentials: true,
-    methods: ["GET", "POST", "PATCH", "OPTIONS"],
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   });
   const buckets = new Map<string, { count: number; reset: number }>();
   app.use((req: Request, res: Response, next: NextFunction) => {
